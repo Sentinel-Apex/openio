@@ -1,0 +1,2 @@
+// Footer 
+export const Footer = () =

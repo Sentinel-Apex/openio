@@ -1,0 +1,2 @@
+// Config 
+export const configShared = () =

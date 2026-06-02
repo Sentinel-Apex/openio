@@ -1,0 +1,2 @@
+// Embeddings 
+export const embeddings = () =

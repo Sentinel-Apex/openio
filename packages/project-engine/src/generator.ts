@@ -1,0 +1,2 @@
+// Generator 
+export const generator = () =

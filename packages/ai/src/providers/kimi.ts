@@ -1,0 +1,2 @@
+// Kimi 
+export const kimi = () =

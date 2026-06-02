@@ -1,0 +1,5 @@
+ECHO is off.
+node_modules 
+dist 
+.env 
+*.log 

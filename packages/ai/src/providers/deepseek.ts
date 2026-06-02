@@ -1,0 +1,2 @@
+// Deepseek 
+export const deepseek = () =

@@ -1,0 +1,2 @@
+// Memory 
+export const memory = () =
