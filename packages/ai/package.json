@@ -1,5 +1,27 @@
-{ 
-  "name": "@openio/ai", 
-  "version": "1.0.0", 
-  "main": "./dist/index.js" 
-} 
+{
+  "name": "@openio/ai",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@openio/shared": "workspace:*",
+    "openai": "^4.28.0",
+    "@anthropic-ai/sdk": "^0.18.0",
+    "groq-sdk": "^0.3.0",
+    "ollama": "^0.5.0",
+    "zod": "^3.22.0"
+  }
+}
