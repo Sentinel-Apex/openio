@@ -1,6 +1,5 @@
-import { z } from 'zod';
+import type { z } from 'zod';
 
-// --- Core Message Types ---
 export type Role = 'user' | 'assistant' | 'system' | 'tool';
 
 export interface Message {
@@ -8,7 +7,7 @@ export interface Message {
   role: Role;
   content: string;
   timestamp: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ChatSession {
@@ -21,7 +20,6 @@ export interface ChatSession {
   agentId?: string;
 }
 
-// --- Model & Provider Types ---
 export interface ModelConfig {
   id: string;
   name: string;
@@ -39,8 +37,7 @@ export interface ProviderConfig {
   baseUrl?: string;
 }
 
-// --- Agent Types ---
-export type AgentRole = 
+export type AgentRole =
   | 'manager'
   | 'backend'
   | 'frontend'
@@ -60,32 +57,33 @@ export interface AgentDefinition {
   tools?: string[];
 }
 
-// --- Tool Types ---
 export interface ToolResult {
   success: boolean;
   output?: string;
   error?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ToolDefinition {
   name: string;
   description: string;
-  parameters: z.ZodType<any>;
-  execute: (args: any) => Promise<ToolResult>;
+  parameters: z.ZodType<unknown>;
+  execute: (args: unknown) => Promise<ToolResult>;
 }
 
-// --- Config Types ---
+export type Theme = 'dark' | 'light';
+export type VectorStore = 'sqlite' | 'chroma' | 'pinecone';
+
 export interface OpenIOConfig {
   defaultModel: string;
   defaultAgent: string;
   providers: Record<string, { apiKey?: string; baseUrl?: string }>;
   memory: {
     enabled: boolean;
-    vectorStore: 'sqlite' | 'chroma' | 'pinecone';
+    vectorStore: VectorStore;
   };
   ui: {
-    theme: 'dark' | 'light';
+    theme: Theme;
     showTimestamps: boolean;
   };
 }

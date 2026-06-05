@@ -1,5 +1,33 @@
-{ 
-  "name": "@openio/project-engine", 
-  "version": "1.0.0", 
-  "main": "./dist/index.js" 
-} 
+{
+  "name": "@openio/project-engine",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@openio/shared": "workspace:*",
+    "@openio/ai": "workspace:*",
+    "@openio/tools": "workspace:*",
+    "execa": "^9.0.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.4"
+  }
+}

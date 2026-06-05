@@ -1,5 +1,33 @@
-{ 
-  "name": "@openio/memory", 
-  "version": "1.0.0", 
-  "main": "./dist/index.js" 
-} 
+{
+  "name": "@openio/memory",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@openio/shared": "workspace:*",
+    "sql.js": "^1.10.0",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/sql.js": "^1.4.0",
+    "@types/uuid": "^10.0.0",
+    "@types/node": "^20.11.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.4"
+  }
+}

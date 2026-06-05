@@ -1,4 +1,7 @@
-export * from './types';
-export * from './constants';
-export * from './errors';
-// We will add logger, config, prompts later as they might depend on external libs
+export * from './types.js';
+export * from './constants.js';
+export * from './errors.js';
+export * from './logger.js';
+export * from './config.js';
+export * from './prompts.js';
+export * from './config-manager.js';
