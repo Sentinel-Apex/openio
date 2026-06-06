@@ -1,12 +1,14 @@
-import type { Database } from 'sql.js';
+import type BetterSqlite3 from 'better-sqlite3';
 import type { Message, ChatSession } from '@openio/shared';
 import { run, queryAll, queryOne } from './sqlite.js';
 import { v4 as uuid } from 'uuid';
 
+type Db = BetterSqlite3.Database;
+
 export const MAX_CONTEXT_MESSAGES = 50;
 export const MAX_CONTEXT_TOKENS_ESTIMATE = 16000;
 
-export function initConversationTable(db: Database): void {
+export function initConversationTable(db: Db): void {
   run(db, `CREATE TABLE IF NOT EXISTS sessions (
     id TEXT PRIMARY KEY,
     title TEXT NOT NULL DEFAULT 'New Chat',
@@ -30,7 +32,7 @@ export function initConversationTable(db: Database): void {
   run(db, `CREATE INDEX IF NOT EXISTS idx_sessions_updated ON sessions(updated_at DESC)`);
 }
 
-export function createSession(db: Database, title?: string, modelId?: string, agentId?: string): ChatSession {
+export function createSession(db: Db, title?: string, modelId?: string, agentId?: string): ChatSession {
   const id = uuid();
   const now = Date.now();
   const session: ChatSession = {
@@ -49,7 +51,7 @@ export function createSession(db: Database, title?: string, modelId?: string, ag
   return session;
 }
 
-export function loadSession(db: Database, sessionId: string): ChatSession | null {
+export function loadSession(db: Db, sessionId: string): ChatSession | null {
   const row = queryOne<{
     id: string; title: string; model_id: string; agent_id: string | null;
     created_at: number; updated_at: number;
@@ -80,7 +82,7 @@ export function loadSession(db: Database, sessionId: string): ChatSession | null
   };
 }
 
-export function listSessions(db: Database, limit = 20, offset = 0): ChatSession[] {
+export function listSessions(db: Db, limit = 20, offset = 0): ChatSession[] {
   const rows = queryAll<{
     id: string; title: string; model_id: string; agent_id: string | null;
     created_at: number; updated_at: number;
@@ -97,7 +99,7 @@ export function listSessions(db: Database, limit = 20, offset = 0): ChatSession[
   }));
 }
 
-export function addMessage(db: Database, sessionId: string, message: Omit<Message, 'id' | 'timestamp'>): Message {
+export function addMessage(db: Db, sessionId: string, message: Omit<Message, 'id' | 'timestamp'>): Message {
   const msg: Message = {
     id: uuid(),
     ...message,
@@ -113,16 +115,16 @@ export function addMessage(db: Database, sessionId: string, message: Omit<Messag
   return msg;
 }
 
-export function deleteSession(db: Database, sessionId: string): void {
+export function deleteSession(db: Db, sessionId: string): void {
   run(db, `DELETE FROM messages WHERE session_id = ?`, [sessionId]);
   run(db, `DELETE FROM sessions WHERE id = ?`, [sessionId]);
 }
 
-export function renameSession(db: Database, sessionId: string, title: string): void {
+export function renameSession(db: Db, sessionId: string, title: string): void {
   run(db, `UPDATE sessions SET title = ?, updated_at = ? WHERE id = ?`, [title, Date.now(), sessionId]);
 }
 
-export function getMessageCount(db: Database, sessionId: string): number {
+export function getMessageCount(db: Db, sessionId: string): number {
   const row = queryOne<{ count: number }>(db, `SELECT COUNT(*) as count FROM messages WHERE session_id = ?`, [sessionId]);
   return row?.count ?? 0;
 }

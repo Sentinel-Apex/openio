@@ -4,7 +4,8 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { execa } from 'execa';
-import { configManager, ConfigError } from '@openio/shared';
+import { configManager } from '../utils/config-manager.js';
+import { ConfigError } from '@openio/shared';
 import { providerManager, OpenAIProvider, AnthropicProvider, GroqProvider, DeepSeekProvider, KimiProvider, OpenRouterProvider, OllamaProvider } from '@openio/ai';
 
 const PROVIDER_MAP: Record<string, { label: string; envVar: string }> = {

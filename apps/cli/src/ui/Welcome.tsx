@@ -5,26 +5,26 @@ interface WelcomeProps {
   onStart?: () => void;
 }
 
-export const Welcome: React.FC<WelcomeProps> = ({ onStart }) => {
+export const Welcome: React.FC<WelcomeProps> = () => {
   return (
     <Box flexDirection="column" alignItems="center" justifyContent="center" paddingY={2}>
       <Box marginBottom={1}>
         <Text bold color="cyan">
-          ╔══════════════════════════════════════╗
+          {'\u2554'}{'\u2550'.repeat(38)}{'\u2557'}
         </Text>
       </Box>
       <Box>
         <Text bold color="cyan">
-          ║          OpenIO v1.0.0              ║
+          {'\u2551'}          OpenIO v1.0.0              {'\u2551'}
         </Text>
       </Box>
       <Box marginBottom={1}>
         <Text bold color="cyan">
-          ╚══════════════════════════════════════╝
+          {'\u255A'}{'\u2550'.repeat(38)}{'\u255D'}
         </Text>
       </Box>
       <Box marginY={1}>
-        <Text dim>AI-Powered CLI Coding Assistant</Text>
+        <Text dimColor>AI-Powered CLI Coding Assistant</Text>
       </Box>
       <Box flexDirection="column" alignItems="center" marginTop={1}>
         <Text>/chat    Start interactive chat</Text>
@@ -35,3 +35,5 @@ export const Welcome: React.FC<WelcomeProps> = ({ onStart }) => {
     </Box>
   );
 };
+
+export default Welcome;

@@ -1,15 +1,17 @@
-import type { Database } from 'sql.js';
+import type BetterSqlite3 from 'better-sqlite3';
 import { MemoryError } from '@openio/shared';
 import { run, queryAll, queryOne } from './sqlite.js';
 import type { ChatSession, Message } from '@openio/shared';
 import { v4 as uuid } from 'uuid';
+
+type Db = BetterSqlite3.Database;
 
 export interface SessionState {
   currentSessionId: string | null;
   sessions: ChatSession[];
 }
 
-export function initSessionTable(db: Database): void {
+export function initSessionTable(db: Db): void {
   run(db, `CREATE TABLE IF NOT EXISTS sessions (
     id TEXT PRIMARY KEY,
     title TEXT NOT NULL DEFAULT 'New Chat',
@@ -33,10 +35,10 @@ export function initSessionTable(db: Database): void {
 }
 
 export class SessionManager {
-  private db: Database;
+  private db: Db;
   private currentId: string | null = null;
 
-  constructor(db: Database) {
+  constructor(db: Db) {
     this.db = db;
     initSessionTable(db);
   }

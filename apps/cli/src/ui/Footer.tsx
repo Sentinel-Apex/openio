@@ -13,10 +13,12 @@ export const Footer: React.FC<FooterProps> = ({ status, showHelp = true }) => {
         {status && <Text color="gray">{status}</Text>}
       </Box>
       {showHelp && (
-        <Text color="gray" dim>
-          Ctrl+C exit · Ctrl+L clear · Tab autocomplete
+        <Text color="gray" dimColor>
+          Ctrl+C exit {'\u00B7'} Ctrl+L clear {'\u00B7'} Tab autocomplete
         </Text>
       )}
     </Box>
   );
 };
+
+export default Footer;

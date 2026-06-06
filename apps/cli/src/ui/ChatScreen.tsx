@@ -3,7 +3,6 @@ import { Box } from 'ink';
 import { Header } from './Header.js';
 import { Footer } from './Footer.js';
 import { MessageBubble } from './MessageBubble.js';
-import { PromptInput } from './PromptInput.js';
 import { LoadingSpinner } from './LoadingSpinner.js';
 import type { Message } from '@openio/shared';
 
@@ -65,14 +64,14 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   return (
     <Box flexDirection="column" height="100%">
       <Header title="OpenIO Chat" model={model} agent={agent} />
-      <Box flexGrow={1} flexDirection="column" paddingX={1} overflowY="auto">
+      <Box flexGrow={1} flexDirection="column" paddingX={1}>
         {messages.map((msg) => (
           <MessageBubble key={msg.id} message={msg} />
         ))}
         {isLoading && <LoadingSpinner text="Thinking..." />}
       </Box>
-      <PromptInput onSubmit={handleSubmit} placeholder="Type a message..." />
-      <Footer />
     </Box>
   );
 };
+
+export default ChatScreen;

@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { showShortBanner } from './utils/banner.js';
-import { configManager } from '@openio/shared';
+import { configManager } from './utils/config-manager.js';
 import { logger } from './utils/logger.js';
 import { registerChat } from './commands/chat.js';
 import { registerCode } from './commands/code.js';
@@ -15,6 +15,9 @@ import { registerProject } from './commands/project.js';
 import { registerInit } from './commands/init.js';
 import { registerSetup, runSetup } from './commands/setup.js';
 import { registerProvider } from './commands/provider.js';
+import { registerWorkspace } from './commands/workspace.js';
+import { registerPlugin } from './commands/plugin.js';
+import { registerUpgrade } from './commands/upgrade.js';
 
 export function createProgram(): Command {
   const program = new Command();
@@ -38,6 +41,9 @@ export function createProgram(): Command {
   registerInit(program);
   registerSetup(program);
   registerProvider(program);
+  registerWorkspace(program);
+  registerPlugin(program);
+  registerUpgrade(program);
 
   return program;
 }

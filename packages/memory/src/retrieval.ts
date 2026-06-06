@@ -1,5 +1,5 @@
-import type { Database } from 'sql.js';
-import { MemoryError, getLogger } from '@openio/shared';
+import type BetterSqlite3 from 'better-sqlite3';
+import { getLogger } from '@openio/shared';
 import { initVectorTable, insertVector, searchVectors, deleteVector, countVectors } from './vector-store.js';
 import { EmbeddingService } from './embeddings.js';
 import type { SearchResult } from './vector-store.js';
@@ -13,12 +13,12 @@ export interface IndexOptions {
 }
 
 export class RetrievalService {
-  private db: Database;
+  private db: BetterSqlite3.Database;
   private embedder: EmbeddingService;
   private options: Required<IndexOptions>;
 
   constructor(
-    db: Database,
+    db: BetterSqlite3.Database,
     embedder: EmbeddingService,
     options: IndexOptions = {},
   ) {

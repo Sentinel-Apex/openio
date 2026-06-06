@@ -14,19 +14,19 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
-    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "build": "tsup",
+    "dev": "tsup --watch",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@openio/shared": "workspace:*",
-    "sql.js": "^1.10.0",
+    "better-sqlite3": "^12.10.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@types/sql.js": "^1.4.0",
-    "@types/uuid": "^10.0.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.11.0",
+    "@types/uuid": "^10.0.0",
     "tsup": "^8.0.0",
     "typescript": "^5.5.4"
   }

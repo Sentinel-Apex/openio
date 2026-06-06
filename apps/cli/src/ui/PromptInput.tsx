@@ -1,21 +1,28 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Text, Box } from 'ink';
+import React, { useState, useCallback } from 'react';
+import { Text, Box, useInput } from 'ink';
 import TextInput from 'ink-text-input';
+import { THEME_CYAN, THEME_DIM } from '../utils/theme.js';
 
 interface PromptInputProps {
+  value: string;
+  onChange: (value: string) => void;
   onSubmit: (value: string) => void;
   placeholder?: string;
   suggestions?: string[];
+  isDisabled?: boolean;
+  isFocused?: boolean;
 }
 
 export const PromptInput: React.FC<PromptInputProps> = ({
+  value,
+  onChange,
   onSubmit,
   placeholder = 'Type a message...',
   suggestions = [],
+  isDisabled = false,
+  isFocused = true,
 }) => {
-  const [value, setValue] = useState('');
   const [suggestionIndex, setSuggestionIndex] = useState(-1);
-  const inputRef = useRef<any>(null);
 
   const filtered = suggestions.filter((s) =>
     s.toLowerCase().startsWith(value.toLowerCase()),
@@ -26,45 +33,42 @@ export const PromptInput: React.FC<PromptInputProps> = ({
       const trimmed = input.trim();
       if (trimmed) {
         onSubmit(trimmed);
-        setValue('');
         setSuggestionIndex(-1);
       }
     },
     [onSubmit],
   );
 
-  const handleKeyDown = useCallback(
-    (e: any) => {
-      if (e.ctrlKey && e.key === 'l') {
-        console.clear();
-      }
-      if (e.key === 'Tab' && filtered.length > 0) {
-        e.preventDefault();
+  useInput(
+    (input, key) => {
+      if (!isFocused || isDisabled) return;
+      if (key.tab && filtered.length > 0) {
         const next = (suggestionIndex + 1) % filtered.length;
         setSuggestionIndex(next);
-        setValue(filtered[next]);
+        onChange(filtered[next]);
       }
     },
-    [filtered, suggestionIndex],
+    { isActive: isFocused && !isDisabled },
   );
 
   return (
     <Box flexDirection="column">
       <Box borderStyle="round" borderColor="cyan" paddingX={1}>
-        <Text color="cyan">❯ </Text>
-        <TextInput
-          ref={inputRef}
-          value={value}
-          onChange={setValue}
-          onSubmit={handleSubmit}
-          placeholder={placeholder}
-        />
+        <Text color="cyan">{'\u276F'} </Text>
+        <Box flexGrow={1}>
+          <TextInput
+            value={value}
+            onChange={onChange}
+            onSubmit={handleSubmit}
+            placeholder={placeholder}
+          />
+        </Box>
       </Box>
       {filtered.length > 0 && (
         <Box marginLeft={2} flexDirection="column">
           {filtered.slice(0, 5).map((s, i) => (
             <Text key={s} color={i === suggestionIndex ? 'cyan' : 'gray'}>
-              {i === suggestionIndex ? '▸ ' : '  '}{s}
+              {i === suggestionIndex ? '\u25B8 ' : '  '}{s}
             </Text>
           ))}
         </Box>
@@ -72,3 +76,5 @@ export const PromptInput: React.FC<PromptInputProps> = ({
     </Box>
   );
 };
+
+export default PromptInput;

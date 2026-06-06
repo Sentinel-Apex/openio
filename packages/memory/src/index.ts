@@ -12,7 +12,7 @@ export type { IndexOptions } from './retrieval.js';
 
 export type { VectorRecord, SearchResult } from './vector-store.js';
 
-export { createDatabase, saveDatabase, withDb, run, queryAll, queryOne } from './sqlite.js';
+export { createDatabase, withDb, run, queryAll, queryOne } from './sqlite.js';
 
 export {
   createSession, loadSession, addMessage, listSessions,

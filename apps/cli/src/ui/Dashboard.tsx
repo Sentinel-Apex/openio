@@ -46,9 +46,11 @@ export const Dashboard: React.FC = () => {
           <Text color="yellow">{providerManager.listProviders().join(', ')}</Text>
         </Box>
         <Box marginTop={1}>
-          <Text dim>Use /chat to start a conversation</Text>
+          <Text dimColor>Use /chat to start a conversation</Text>
         </Box>
       </Box>
     </Box>
   );
 };
+
+export default Dashboard;

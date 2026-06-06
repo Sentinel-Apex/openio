@@ -22,7 +22,9 @@
       "@openio/memory": ["packages/memory/src/index.ts"],
       "@openio/tools": ["packages/tools/src/index.ts"],
       "@openio/mcp": ["packages/mcp/src/index.ts"],
-      "@openio/project-engine": ["packages/project-engine/src/index.ts"]
+      "@openio/project-engine": ["packages/project-engine/src/index.ts"],
+      "@openio/workspace-manager": ["packages/workspace-manager/src/index.ts"],
+      "@openio/plugin-system": ["packages/plugin-system/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "dist"]

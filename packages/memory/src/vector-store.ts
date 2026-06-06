@@ -1,4 +1,4 @@
-import type { Database } from 'sql.js';
+import type BetterSqlite3 from 'better-sqlite3';
 import { run, queryAll } from './sqlite.js';
 import { cosineSimilarity } from './embeddings.js';
 
@@ -17,7 +17,7 @@ export interface SearchResult {
   metadata?: Record<string, unknown>;
 }
 
-export function initVectorTable(db: Database): void {
+export function initVectorTable(db: BetterSqlite3.Database): void {
   run(db, `CREATE TABLE IF NOT EXISTS vectors (
     id TEXT PRIMARY KEY,
     vector TEXT NOT NULL,
@@ -29,43 +29,42 @@ export function initVectorTable(db: Database): void {
 }
 
 export function insertVector(
-  db: Database,
+  db: BetterSqlite3.Database,
   id: string,
   vector: number[],
   text: string,
   metadata?: Record<string, unknown>,
 ): void {
-  run(db, `INSERT OR REPLACE INTO vectors (id, vector, text, metadata, created_at) VALUES (?, ?, ?, ?, ?)`, [
-    id,
-    JSON.stringify(vector),
-    text,
-    metadata ? JSON.stringify(metadata) : null,
-    Date.now(),
-  ]);
+  run(
+    db,
+    `INSERT OR REPLACE INTO vectors (id, vector, text, metadata, created_at) VALUES (?, ?, ?, ?, ?)`,
+    [id, JSON.stringify(vector), text, metadata ? JSON.stringify(metadata) : null, Date.now()],
+  );
 }
 
-export function deleteVector(db: Database, id: string): void {
+export function deleteVector(db: BetterSqlite3.Database, id: string): void {
   run(db, `DELETE FROM vectors WHERE id = ?`, [id]);
 }
 
-export function getAllVectors(db: Database): VectorRecord[] {
-  return queryAll<{
+export function getAllVectors(db: BetterSqlite3.Database): VectorRecord[] {
+  const rows = queryAll<{
     id: string;
     vector: string;
     text: string;
     metadata: string | null;
     created_at: number;
-  }>(db, `SELECT id, vector, text, metadata, created_at FROM vectors ORDER BY created_at DESC`).map((r) => ({
+  }>(db, `SELECT id, vector, text, metadata, created_at FROM vectors ORDER BY created_at DESC`);
+  return rows.map((r) => ({
     id: r.id,
     vector: JSON.parse(r.vector) as number[],
     text: r.text,
-    metadata: r.metadata ? JSON.parse(r.metadata) as Record<string, unknown> : undefined,
+    metadata: r.metadata ? (JSON.parse(r.metadata) as Record<string, unknown>) : undefined,
     createdAt: r.created_at,
   }));
 }
 
 export function searchVectors(
-  db: Database,
+  db: BetterSqlite3.Database,
   queryVector: number[],
   topK: number = 5,
   minScore: number = 0.0,
@@ -89,7 +88,7 @@ export function searchVectors(
   }));
 }
 
-export function countVectors(db: Database): number {
+export function countVectors(db: BetterSqlite3.Database): number {
   const rows = queryAll<{ count: number }>(db, `SELECT COUNT(*) as count FROM vectors`);
   return rows[0]?.count ?? 0;
 }

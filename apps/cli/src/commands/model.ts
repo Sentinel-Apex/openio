@@ -4,7 +4,7 @@ import ora from 'ora';
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
-import { configManager } from '@openio/shared';
+import { configManager } from '../utils/config-manager.js';
 import { providerManager, OpenAIProvider, AnthropicProvider, GroqProvider, DeepSeekProvider, KimiProvider, OpenRouterProvider, OllamaProvider, modelRegistry, loadModels } from '@openio/ai';
 import type { ModelConfig } from '@openio/shared';
 

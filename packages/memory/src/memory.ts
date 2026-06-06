@@ -1,14 +1,13 @@
-import { existsSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import type BetterSqlite3 from 'better-sqlite3';
+import { join } from 'node:path';
 import { homedir } from 'node:os';
-import { MemoryError, getLogger } from '@openio/shared';
-import { createDatabase, saveDatabase, withDb, run, queryAll } from './sqlite.js';
-import { initConversationTable, createSession, addMessage, listSessions, loadSession, deleteSession, renameSession, trimContext, MAX_CONTEXT_MESSAGES } from './conversation.js';
+import { getLogger } from '@openio/shared';
+import { createDatabase, run, queryAll } from './sqlite.js';
+import { initConversationTable, trimContext, MAX_CONTEXT_MESSAGES } from './conversation.js';
 import { SessionManager } from './session.js';
 import { EmbeddingService } from './embeddings.js';
 import { RetrievalService } from './retrieval.js';
-import type { Database } from 'sql.js';
-import type { Message, ChatSession } from '@openio/shared';
+import type { Message } from '@openio/shared';
 
 export interface MemoryConfig {
   dbPath?: string;
@@ -22,7 +21,7 @@ export interface MemoryConfig {
 }
 
 export class MemoryManager {
-  private db!: Database;
+  private db!: BetterSqlite3.Database;
   private dbPath: string;
   public sessions!: SessionManager;
   public retrieval!: RetrievalService;
@@ -37,8 +36,8 @@ export class MemoryManager {
     });
   }
 
-  async init(): Promise<void> {
-    this.db = await createDatabase(this.dbPath);
+  init(): void {
+    this.db = createDatabase(this.dbPath);
     initConversationTable(this.db);
     this.sessions = new SessionManager(this.db);
     this.retrieval = new RetrievalService(this.db, this.embedder, {
@@ -50,14 +49,7 @@ export class MemoryManager {
     getLogger().info({ dbPath: this.dbPath }, 'Memory manager initialized');
   }
 
-  save(): void {
-    if (this.db) {
-      saveDatabase(this.db, this.dbPath);
-    }
-  }
-
   close(): void {
-    this.save();
     if (this.db) {
       this.db.close();
     }
@@ -70,8 +62,6 @@ export class MemoryManager {
     metadata?: Record<string, unknown>,
   ): Promise<Message> {
     const msg = this.sessions.addMessage(sessionId, role, content, metadata);
-    this.save();
-
     if (content.length > 50 && (role === 'user' || role === 'assistant')) {
       try {
         await this.retrieval.index(content, {
@@ -83,7 +73,6 @@ export class MemoryManager {
         getLogger().warn({ error: (err as Error).message }, 'Failed to index message');
       }
     }
-
     return msg;
   }
 
@@ -91,10 +80,11 @@ export class MemoryManager {
     return this.retrieval.search(query, topK);
   }
 
-  async getContext(sessionId: string, query?: string, maxTokens = 16000): Promise<{
-    messages: Message[];
-    context: string;
-  }> {
+  async getContext(
+    sessionId: string,
+    query?: string,
+    maxTokens = 16000,
+  ): Promise<{ messages: Message[]; context: string }> {
     const session = this.sessions.load(sessionId);
     const messages = session ? trimContext(session.messages, maxTokens) : [];
 
@@ -110,23 +100,13 @@ export class MemoryManager {
     return { messages: messages.slice(-MAX_CONTEXT_MESSAGES), context };
   }
 
-  async summarizeSession(sessionId: string): Promise<string> {
+  summarizeSession(sessionId: string): string {
     const session = this.sessions.load(sessionId);
     if (!session || session.messages.length < 4) return session?.title ?? '';
-
-    const text = session.messages
-      .map((m) => `[${m.role}] ${m.content}`)
-      .join('\n')
-      .slice(0, 8000);
-
     return `Session: ${session.title}\nMessages: ${session.messages.length}\nLast message: ${session.messages[session.messages.length - 1]?.content.slice(0, 100)}...\n\nSummary not yet generated (requires LLM call)`;
   }
 
-  stats(): {
-    sessions: number;
-    messages: number;
-    vectors: number;
-  } {
+  stats(): { sessions: number; messages: number; vectors: number } {
     const sessionCount = queryAll<{ count: number }>(this.db, `SELECT COUNT(*) as count FROM sessions`)[0]?.count ?? 0;
     const messageCount = queryAll<{ count: number }>(this.db, `SELECT COUNT(*) as count FROM messages`)[0]?.count ?? 0;
     const vectorCount = this.retrieval.stats().count;

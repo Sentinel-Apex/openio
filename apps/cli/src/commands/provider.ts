@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
-import { configManager } from '@openio/shared';
+import { configManager } from '../utils/config-manager.js';
 import { providerManager, OpenAIProvider, AnthropicProvider, GroqProvider, DeepSeekProvider, KimiProvider, OpenRouterProvider, OllamaProvider } from '@openio/ai';
 
 const PROVIDER_MAP: Record<string, { label: string; envVar: string }> = {
@@ -137,7 +137,7 @@ export function registerProvider(program: Command): void {
         : `${modelPrefix}/${currentModel}`;
 
       configManager.setModel(updatedModel);
-      configManager.setProvider(p);
+      configManager.setActiveProvider(p);
 
       console.log(chalk.green(`\n  ✓ Switched to ${chalk.bold(PROVIDER_MAP[p].label)}`));
       console.log(chalk.dim(`    Model: ${updatedModel}\n`));

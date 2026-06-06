@@ -28,11 +28,13 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({ onSelect, provider
       {models.slice(0, 20).map((m, i) => (
         <Box key={m.id}>
           <Text color={i === selectedIdx ? 'cyan' : 'gray'}>
-            {i === selectedIdx ? '▸ ' : '  '}{m.id}
+            {i === selectedIdx ? '\u25B8 ' : '  '}{m.id}
           </Text>
-          <Text dim> ({m.provider})</Text>
+          <Text dimColor> ({m.provider})</Text>
         </Box>
       ))}
     </Box>
   );
 };
+
+export default ModelSelector;

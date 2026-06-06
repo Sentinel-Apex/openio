@@ -13,7 +13,7 @@ const ALL_AGENTS = [
 ];
 
 export const AgentSelector: React.FC<AgentSelectorProps> = ({ onSelect }) => {
-  const [selectedIdx, setSelectedIdx] = useState(0);
+  const [selectedIdx] = useState(0);
 
   return (
     <Box flexDirection="column" padding={1}>
@@ -21,14 +21,16 @@ export const AgentSelector: React.FC<AgentSelectorProps> = ({ onSelect }) => {
       {ALL_AGENTS.map((a, i) => (
         <Box key={a.role}>
           <Text color={i === selectedIdx ? 'green' : 'gray'}>
-            {i === selectedIdx ? '▸ ' : '  '}
+            {i === selectedIdx ? '\u25B8 ' : '  '}
           </Text>
           <Text color={i === selectedIdx ? 'green' : undefined}>
             {a.role}
           </Text>
-          <Text dim> — {a.description}</Text>
+          <Text dimColor> {'\u2014'} {a.description}</Text>
         </Box>
       ))}
     </Box>
   );
 };
+
+export default AgentSelector;

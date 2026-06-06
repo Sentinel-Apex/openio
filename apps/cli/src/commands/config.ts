@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
-import { configManager } from '@openio/shared';
+import { configManager } from '../utils/config-manager.js';
 import { providerManager, OpenAIProvider, AnthropicProvider, GroqProvider, DeepSeekProvider, OllamaProvider } from '@openio/ai';
 import { logger } from '../utils/logger.js';
 import { runSetup } from './setup.js';
@@ -98,7 +98,7 @@ export function registerConfig(program: Command): void {
       const model = configManager.getModel();
       const newModel = model.includes('/') ? `${p}/${model.split('/').pop()}` : `${p}/default`;
       configManager.setModel(newModel);
-      configManager.setProvider(p);
+      configManager.setActiveProvider(p);
       logger.success(`Provider set to ${chalk.bold(PROVIDER_LABELS[p])}`);
     });
 
